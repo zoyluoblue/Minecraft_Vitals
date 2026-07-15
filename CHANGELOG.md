@@ -4,6 +4,8 @@ All notable changes to Vitals are documented here.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-15
+
 ### Added
 
 - Initial client-only RPG health bar renderer for Minecraft 1.21.3.
@@ -12,6 +14,14 @@ All notable changes to Vitals are documented here.
 - Smooth health animation and delayed damage trail.
 - Atomic client configuration persistence with backup and corrupt-file preservation.
 - Localization, logic, metadata, CI, and release verification gates.
+
+### Fixed
+
+- Eliminated health-bar flicker caused by overlapping coplanar translucent quads.
+
+### Changed
+
+- Non-zero armor is rendered as a yellow line above the health bar; zero armor is hidden.
 
 ### Compatibility
 

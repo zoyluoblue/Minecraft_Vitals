@@ -368,10 +368,17 @@ public final class VitalsConfigScreen extends Screen {
 		int previewWidth = Math.min(contentWidth - 24, Math.max(96, (int) Math.round(150.0D * working.scale)));
 		int left = previewCenter - previewWidth / 2;
 		int right = previewCenter + previewWidth / 2;
-		int barTop = previewTop + (working.showName ? 10 : 2);
+		Text previewArmor = previewArmorText();
+		int labelY = previewTop;
 		if (working.showName) {
-			context.drawCenteredTextWithShadow(textRenderer, Text.translatable("screen.vitals.preview_name"), previewCenter, previewTop, 0xFFFFFFFF);
+			context.drawCenteredTextWithShadow(textRenderer, Text.translatable("screen.vitals.preview_name"), previewCenter, labelY, 0xFFFFFFFF);
+			labelY += 10;
 		}
+		if (previewArmor != null) {
+			context.drawCenteredTextWithShadow(textRenderer, previewArmor, previewCenter, labelY, 0xFFFFD45B);
+			labelY += 10;
+		}
+		int barTop = labelY + 2;
 
 		context.fill(left, barTop, right, barTop + 13, GOLD);
 		context.fill(left + 1, barTop + 1, right - 1, barTop + 12, PREVIEW_BACKGROUND);
@@ -380,7 +387,7 @@ public final class VitalsConfigScreen extends Screen {
 		int healthColor = working.enabled ? HealthBarMath.colorFor(0.63D) : 0xFF66616B;
 		context.fill(left + 2, barTop + 2, left + 2 + (int) (innerWidth * 0.63D), barTop + 11, healthColor);
 
-		Text previewValue = previewValueText();
+		Text previewValue = previewHealthText();
 		if (previewValue != null) {
 			context.drawCenteredTextWithShadow(textRenderer, previewValue, previewCenter, barTop + 2, 0xFFFFFFFF);
 		}
@@ -389,19 +396,17 @@ public final class VitalsConfigScreen extends Screen {
 		}
 	}
 
-	private Text previewValueText() {
+	private Text previewHealthText() {
+		if (!working.showHealthNumbers) {
+			return null;
+		}
 		String current = HealthBarMath.formatValue(12.625D, working.decimalPlaces);
 		String maximum = HealthBarMath.formatValue(20.0D, working.decimalPlaces);
-		if (working.showHealthNumbers && working.showArmor) {
-			return Text.translatable("hud.vitals.health_armor", current, maximum, 8);
-		}
-		if (working.showHealthNumbers) {
-			return Text.translatable("hud.vitals.health", current, maximum);
-		}
-		if (working.showArmor) {
-			return Text.translatable("hud.vitals.armor", 8);
-		}
-		return null;
+		return Text.translatable("hud.vitals.health", current, maximum);
+	}
+
+	private Text previewArmorText() {
+		return working.showArmor ? Text.translatable("hud.vitals.armor", 8) : null;
 	}
 
 	private enum Page {

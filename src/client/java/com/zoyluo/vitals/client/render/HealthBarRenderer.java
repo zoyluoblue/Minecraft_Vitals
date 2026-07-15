@@ -38,6 +38,7 @@ public final class HealthBarRenderer {
 	private static final int BACKGROUND_COLOR = 0xE616181D;
 	private static final int DAMAGE_TRAIL_COLOR = 0xFFF1D18A;
 	private static final int TEXT_COLOR = 0xFFFFFFFF;
+	private static final int ARMOR_TEXT_COLOR = 0xFFFFD45B;
 
 	private static final HealthBarAnimationCache ANIMATIONS = new HealthBarAnimationCache();
 	private static long frame;
@@ -137,11 +138,17 @@ public final class HealthBarRenderer {
 		float scale = (float) (0.025D * config.scale);
 		matrices.scale(scale, -scale, scale);
 
-		Text valueText = createValueText(entity, config);
+		Text healthText = createHealthText(entity, config);
+		Text armorText = createArmorText(entity, config);
 		OrderedText nameText = createNameText(entity, config, textRenderer, vanillaNameplateVisible);
-		int valueWidth = valueText == null ? 0 : textRenderer.getWidth(valueText);
+		int healthWidth = healthText == null ? 0 : textRenderer.getWidth(healthText);
+		int armorWidth = armorText == null ? 0 : textRenderer.getWidth(armorText);
 		int nameWidth = nameText == null ? 0 : textRenderer.getWidth(nameText);
-		int barWidth = MathHelper.clamp(Math.max(MIN_BAR_WIDTH, Math.max(valueWidth, nameWidth) + 10), MIN_BAR_WIDTH, MAX_BAR_WIDTH);
+		int barWidth = MathHelper.clamp(
+				Math.max(MIN_BAR_WIDTH, Math.max(Math.max(healthWidth, armorWidth), nameWidth) + 10),
+				MIN_BAR_WIDTH,
+				MAX_BAR_WIDTH
+		);
 
 		drawBar(
 				matrices.peek().getPositionMatrix(),
@@ -155,7 +162,7 @@ public final class HealthBarRenderer {
 			textRenderer.draw(
 					nameText,
 					-nameWidth / 2.0F,
-					-11.0F,
+					armorText == null ? -11.0F : -21.0F,
 					TEXT_COLOR,
 					true,
 					matrices.peek().getPositionMatrix(),
@@ -165,10 +172,24 @@ public final class HealthBarRenderer {
 					LightmapTextureManager.MAX_LIGHT_COORDINATE
 			);
 		}
-		if (valueText != null) {
+		if (armorText != null) {
 			textRenderer.draw(
-					valueText,
-					-valueWidth / 2.0F,
+					armorText,
+					-armorWidth / 2.0F,
+					-11.0F,
+					ARMOR_TEXT_COLOR,
+					true,
+					matrices.peek().getPositionMatrix(),
+					consumers,
+					TextRenderer.TextLayerType.NORMAL,
+					0,
+					LightmapTextureManager.MAX_LIGHT_COORDINATE
+			);
+		}
+		if (healthText != null) {
+			textRenderer.draw(
+					healthText,
+					-healthWidth / 2.0F,
 					1.0F,
 					TEXT_COLOR,
 					true,
@@ -200,19 +221,20 @@ public final class HealthBarRenderer {
 		return Language.getInstance().reorder(trimmed);
 	}
 
-	private static Text createValueText(LivingEntity entity, VitalsConfig config) {
+	private static Text createHealthText(LivingEntity entity, VitalsConfig config) {
+		if (!config.showHealthNumbers) {
+			return null;
+		}
 		String current = HealthBarMath.formatValue(entity.getHealth(), config.decimalPlaces);
 		String maximum = HealthBarMath.formatValue(entity.getMaxHealth(), config.decimalPlaces);
-		if (config.showHealthNumbers && config.showArmor) {
-			return Text.translatable("hud.vitals.health_armor", current, maximum, entity.getArmor());
+		return Text.translatable("hud.vitals.health", current, maximum);
+	}
+
+	private static Text createArmorText(LivingEntity entity, VitalsConfig config) {
+		if (!config.showArmor || entity.getArmor() <= 0) {
+			return null;
 		}
-		if (config.showHealthNumbers) {
-			return Text.translatable("hud.vitals.health", current, maximum);
-		}
-		if (config.showArmor) {
-			return Text.translatable("hud.vitals.armor", entity.getArmor());
-		}
-		return null;
+		return Text.translatable("hud.vitals.armor", entity.getArmor());
 	}
 
 	private static void drawBar(
@@ -228,19 +250,40 @@ public final class HealthBarRenderer {
 		float right = width / 2.0F;
 		float top = 0.0F;
 		float bottom = 11.0F;
-		drawRect(vertices, matrix, left, top, right, bottom, FRAME_COLOR);
-		drawRect(vertices, matrix, left + 1.0F, top + 1.0F, right - 1.0F, bottom - 1.0F, BACKGROUND_COLOR);
-
+		float frameLeft = left + 1.0F;
+		float frameRight = right - 1.0F;
+		float frameTop = top + 1.0F;
+		float frameBottom = bottom - 1.0F;
 		float innerLeft = left + 2.0F;
 		float innerRight = right - 2.0F;
+		float innerTop = top + 2.0F;
+		float innerBottom = bottom - 2.0F;
 		float innerWidth = innerRight - innerLeft;
-		float trailRight = innerLeft + innerWidth * (float) HealthBarMath.clamp01(trailRatio);
 		float fillRight = innerLeft + innerWidth * (float) HealthBarMath.clamp01(displayedRatio);
+		float trailRight = Math.max(fillRight, innerLeft + innerWidth * (float) HealthBarMath.clamp01(trailRatio));
+
+		// text_background is a translucent, quad-sorted layer. These regions must never overlap,
+		// otherwise coplanar frame/fill/trail quads can be reordered between frames and flicker.
+		drawRect(vertices, matrix, left, top, right, frameTop, FRAME_COLOR);
+		drawRect(vertices, matrix, left, frameBottom, right, bottom, FRAME_COLOR);
+		drawRect(vertices, matrix, left, frameTop, frameLeft, frameBottom, FRAME_COLOR);
+		drawRect(vertices, matrix, frameRight, frameTop, right, frameBottom, FRAME_COLOR);
+
+		drawRect(vertices, matrix, frameLeft, frameTop, frameRight, innerTop, BACKGROUND_COLOR);
+		drawRect(vertices, matrix, frameLeft, innerBottom, frameRight, frameBottom, BACKGROUND_COLOR);
+		drawRect(vertices, matrix, frameLeft, innerTop, innerLeft, innerBottom, BACKGROUND_COLOR);
+		drawRect(vertices, matrix, innerRight, innerTop, frameRight, innerBottom, BACKGROUND_COLOR);
+
 		if (trailRight > innerLeft) {
-			drawRect(vertices, matrix, innerLeft, top + 2.0F, trailRight, bottom - 2.0F, DAMAGE_TRAIL_COLOR);
+			if (fillRight > innerLeft) {
+				drawRect(vertices, matrix, innerLeft, innerTop, fillRight, innerBottom, HealthBarMath.colorFor(actualRatio));
+			}
+			if (trailRight > fillRight) {
+				drawRect(vertices, matrix, fillRight, innerTop, trailRight, innerBottom, DAMAGE_TRAIL_COLOR);
+			}
 		}
-		if (fillRight > innerLeft) {
-			drawRect(vertices, matrix, innerLeft, top + 2.0F, fillRight, bottom - 2.0F, HealthBarMath.colorFor(actualRatio));
+		if (trailRight < innerRight) {
+			drawRect(vertices, matrix, trailRight, innerTop, innerRight, innerBottom, BACKGROUND_COLOR);
 		}
 	}
 

@@ -11,7 +11,7 @@
 
 | ID | Requirement | Level | Procedure | Expected | Evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| R-001 | 所有合格生物显示头顶血条 | manual | 单人生成多类实体 | 名称、条和数字正确 | screenshot | PENDING |
+| R-001 | 所有合格生物显示头顶血条 | manual | 单人生成多类实体 | 名称、条和数字正确且无闪烁 | screenshot | PENDING |
 | R-002 | 左 Alt/Option + V 打开配置 | unit/manual | 边沿逻辑检查并在 Windows/macOS 分别按键 | 仅左修饰键触发 | `runLogicChecks` + device recording | PARTIAL |
 | R-003 | 设置保存和重载 | integration/manual | 修改、保存、重启客户端 | JSON 与 UI 一致 | generated config/log | PARTIAL |
 | R-004 | 平滑生命与拖尾 | unit/manual | 实体受伤和治疗 | 收敛、无超界或跳变 | `runLogicChecks` + video | PARTIAL |
@@ -61,13 +61,14 @@
 
 ## 8. Manual Acceptance
 
-1. 在中文语言进入世界，确认满血和受伤的友好、敌对、玩家实体，以及驯服狼和驯服马。
-2. 用墙体完全遮挡实体，确认血条不会穿墙。
-3. 测试隐身、死亡、旁观者和本地玩家。
-4. 打开配置，逐项修改并观察预览；“取消”不生效，“应用”保存，“恢复默认”只替换当前草稿。
-5. 切换英文，重新打开面板并重复关键流程。
-6. 连接无 Vitals 的多人服务器，观察普通实体和远端玩家。
-7. 在 Windows 与 macOS 分别验证左 Alt/Option；右侧修饰键不得触发。
+1. 在中文语言进入世界，确认满血和受伤的友好、敌对、玩家实体，以及驯服狼和驯服马；持续观察并平移、旋转镜头 30 秒，确认条、伤害拖尾和背景不会闪烁或互相覆盖。
+2. 开启护甲显示后，确认非零护甲以黄色显示在血条上方；护甲为 `0` 时不显示护甲行。
+3. 用墙体完全遮挡实体，确认血条不会穿墙。
+4. 测试隐身、死亡、旁观者和本地玩家。
+5. 打开配置，逐项修改并观察预览；“取消”不生效，“应用”保存，“恢复默认”只替换当前草稿。
+6. 切换英文，重新打开面板并重复关键流程。
+7. 连接无 Vitals 的多人服务器，观察普通实体和远端玩家。
+8. 在 Windows 与 macOS 分别验证左 Alt/Option；右侧修饰键不得触发。
 
 ## 9. Unverified
 

@@ -9,7 +9,7 @@ Vitals is a client-only Fabric mod that renders configurable RPG-style health ba
 - World-space health bars above nearby living entities.
 - Smooth health transitions and a delayed damage trail.
 - Exact current/max health values with configurable decimal precision.
-- Optional entity name and armor value.
+- Optional entity name and non-zero armor value above the health bar.
 - Separate filters for players, vanilla bosses, tamed, neutral, hostile and passive creatures, armor stands, and other living entities.
 - Depth-tested rendering: bars are hidden behind opaque world geometry.
 - Built-in bilingual configuration screen with a live preview.

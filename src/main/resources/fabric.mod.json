@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "vitals",
+	"version": "${version}",
+	"name": "Vitals",
+	"description": "Configurable RPG-style health bars above living entities, built as a client-only Fabric mod.",
+	"authors": [
+		"zoyluo"
+	],
+	"contact": {
+		"homepage": "https://github.com/zoyluoblue/Minecraft_Vitals",
+		"sources": "https://github.com/zoyluoblue/Minecraft_Vitals",
+		"issues": "https://github.com/zoyluoblue/Minecraft_Vitals/issues"
+	},
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.zoyluo.vitals.client.VitalsClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "1.21.3",
+		"java": ">=21",
+		"fabric-api": ">=0.114.1+1.21.3"
+	}
+}

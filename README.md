@@ -1,77 +1,127 @@
-# Vitals
+# Vitals — RPG Health Bars for Minecraft
 
-Vitals is a client-only Fabric mod that renders configurable RPG-style health bars above living entities. It works in single-player and on multiplayer servers without requiring a server-side installation.
+![Vitals: luminous RPG health bars floating above creatures in a voxel fantasy battle](images/vitals-github-poster.png)
 
-[简体中文](README.zh-CN.md)
+> **Vitals is a client-side Fabric mod for Minecraft 1.21.3 that adds smooth, configurable RPG-style health bars above living entities.** Install it only on the clients that want the HUD; a server-side installation is not required.
 
-## Features
+[简体中文](README.zh-CN.md) · [Download v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) · [Report an issue](https://github.com/zoyluoblue/Minecraft_Vitals/issues)
 
-- World-space health bars above nearby living entities.
-- Smooth health transitions and a delayed damage trail.
-- Exact current/max health values with configurable decimal precision.
-- Optional entity name and non-zero armor value above the health bar.
-- Separate filters for players, vanilla bosses, tamed, neutral, hostile and passive creatures, armor stands, and other living entities.
-- Depth-tested rendering: bars are hidden behind opaque world geometry.
-- Built-in bilingual configuration screen with a live preview.
-- No Mixin, no custom network protocol, and no third-party configuration library.
+## Why Vitals?
 
-## Open the configuration screen
+Combat should be readable at a glance. Vitals turns nearby living entities into clear RPG targets with an exact health readout, a smooth health transition, and a delayed damage trail—without changing gameplay, entity data, or server rules.
 
-- Windows/Linux: **Left Alt + V**
-- macOS: **Left Option + V**
+- **RPG clarity:** world-space health bars, exact current/max health, optional names, and yellow armor values.
+- **Client-only freedom:** works in single-player and can join multiplayer servers that do not install Vitals.
+- **Your view, your rules:** choose categories, range, scale, decimal precision, and what each bar shows.
+- **Built for real worlds:** depth-tested bars stay behind opaque blocks; entity and cache caps keep rendering bounded.
 
-Only the left modifier key triggers the shortcut. The screen provides Display and Entities pages, live preview, defaults, Cancel, Apply, and Done actions. Pressing Escape with unapplied changes asks before discarding them.
+## At a glance
 
-Settings are stored in `config/vitals.json`. Saves use a temporary file, validation, backup, and atomic replacement when supported.
-
-## Multiplayer behavior
-
-The server does not need Vitals. The mod reads the health and maximum-health state that Minecraft already synchronizes to each client.
-
-Every player who wants to see health bars must install Vitals on their own client. Health bars and settings are not pushed to players who do not have the mod, and local configuration is not shared between clients.
-
-## Supported environment
-
-| Component | Version |
+| Question | Answer |
 | --- | --- |
-| Minecraft | `1.21.3` |
-| Java | `21` |
-| Fabric Loader | `0.18.4` or newer compatible release |
-| Fabric API | `0.114.1+1.21.3` or newer compatible release |
+| What Minecraft version? | Minecraft `1.21.3` |
+| Which mod loader? | Fabric Loader `0.18.4` or a newer compatible release |
+| Is it client-side? | Yes. Vitals has no server entrypoint, Payload, or Mixin. |
+| Does a server need the mod? | No. Install it only on the clients that want health bars. |
+| Is multiplayer supported? | Yes, for the health state Minecraft already synchronizes to your client. |
+| Is it configurable? | Yes: display, numbers, armor, categories, range, scale, and precision. |
+| Languages | English and Simplified Chinese, following Minecraft's language setting. |
 
-Vitals is client-only. Install the JAR in the client's `mods` directory together with Fabric API.
+## Install Vitals
 
-## Compatibility and limitations
+1. Install **Fabric Loader** for Minecraft `1.21.3`.
+2. Download [Vitals v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) and a compatible **Fabric API** release.
+3. Put both JAR files in your Minecraft client's `mods` folder.
+4. Start Minecraft with the Fabric profile and enter a world or server.
 
-- Unknown modded `LivingEntity` implementations use the generic “Other Living Entities” filter.
-- Dedicated adapters for mods such as The Twilight Forest are planned after targeted compatibility testing.
-- Absorption health and complete status effects are not shown in the initial release because a client-only mod cannot reliably obtain those values for every remote entity.
-- The local player is hidden to avoid a first-person camera overlap.
-- Vanilla nameplates are respected; Vitals avoids drawing a duplicate name when Minecraft is already rendering one.
-- Servers that intentionally hide or rewrite client-visible health remain authoritative.
+Vitals does not need to be installed on the server. Each player who wants to see health bars installs it on their own client; local display settings are not shared with other players.
+
+## Use it in game
+
+### Open the configuration screen
+
+| Platform | Shortcut |
+| --- | --- |
+| Windows / Linux | **Left Alt + V** |
+| macOS | **Left Option + V** |
+
+Only the **left** Alt/Option key triggers the shortcut. The native configuration screen has **Display** and **Entities** pages, a live preview, **Defaults**, **Cancel**, **Apply**, and **Done** actions. Pressing Escape with unapplied edits asks before discarding them.
+
+### What the bar shows
+
+- A smooth health fill plus a delayed damage trail.
+- Exact current and maximum health, with configurable decimal precision.
+- Optional entity name above the bar.
+- Optional **yellow armor value** above the bar. Armor is hidden when it is `0`.
+
+Vitals always renders eligible, full-health entities by default. It hides the local player, invisible entities, spectators, and dead entities so the HUD stays readable.
+
+### Choose what to track
+
+Enable or disable independent filters for players, vanilla bosses, tamed, neutral, hostile, passive creatures, armor stands, and other living entities. Unknown modded entities that extend `LivingEntity` use the generic **Other Living Entities** filter.
+
+## Multiplayer and compatibility
+
+Vitals reads the health and maximum-health values that Minecraft already provides to your client. The server remains authoritative: if a server deliberately hides or rewrites a value, Vitals respects that behavior.
+
+- No server mod, custom protocol, or configuration sync is added.
+- No Mixin or third-party configuration library is used.
+- Vitals does not force-load chunks, change entity state, or modify world saves.
+- Modded `LivingEntity` implementations receive generic support; dedicated integrations, including The Twilight Forest, require targeted compatibility testing before they are claimed as supported.
 
 ## Performance boundaries
 
-- Configurable range: `8–64` blocks; default `32`.
-- At most `256` nearby candidates are collected and at most `96` bars are rendered per frame.
-- The animation cache is capped at `128` entities and is cleared across world/connection lifecycle changes.
-- Vitals never force-loads chunks and never changes entity state.
+Vitals only evaluates loaded entities near the player and renders the closest eligible targets.
 
-## Build
+| Boundary | Limit |
+| --- | --- |
+| Configurable range | `8–64` blocks; default `32` |
+| Nearby candidates collected per frame | `256` |
+| Health bars rendered per frame | `96` |
+| Animation cache | `128` entities, cleared when worlds/connections change |
+
+Bars are depth-tested, so opaque world geometry occludes them rather than allowing them to render through walls.
+
+## FAQ
+
+### Does Vitals work on a multiplayer server without installing it on the server?
+
+Yes. Vitals is client-only. Install it on each client that wants the display; the server and players without the mod are unaffected.
+
+### Why does a health bar not show through a wall?
+
+That is intentional. Vitals uses depth-tested world rendering, so opaque blocks hide bars behind them.
+
+### Can I see absorption hearts or every status effect?
+
+Not in `1.0.0`. A client-only mod cannot reliably obtain those values for every remote entity, so Vitals only presents health data that is safe to read from normal client state.
+
+### Does Vitals work with modded mobs?
+
+Usually, if the mob is a `LivingEntity` and exposes normal client-visible health. It is handled by the generic filter. Specific third-party mods are not advertised as fully tested until an integration pass is complete.
+
+### Where are my settings stored?
+
+On your client at `config/vitals.json`. Vitals validates saves, keeps a backup when replacing a previous file, and preserves malformed files for recovery.
+
+## Build from source
+
+Requirements: Java `21`.
 
 ~~~bash
 ./gradlew clean build --no-daemon --stacktrace
 ~~~
 
-The build verifies compilation, dependency-free logic checks, localization parity, client-only metadata, resources, and the remapped JAR.
+The build checks Java compilation, dependency-free logic, English/Chinese localization parity, client-only metadata, resources, and the remapped JAR.
 
-## Documentation
+## Project documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
-- [Feature design](docs/features/health-bars/FEATURE_DESIGN.md)
-- [Test plan](docs/testing/TEST_PLAN.md)
+- [Health bar feature design](docs/features/health-bars/FEATURE_DESIGN.md)
+- [Test plan and current verification](docs/testing/TEST_PLAN.md)
 - [Release process](RELEASING.md)
+- [Changelog](CHANGELOG.md)
 
-## License
+## Credits and license
 
-[MIT](LICENSE)
+Vitals is released under the [MIT License](LICENSE). Minecraft is a trademark of Mojang Studios; this project is not affiliated with or endorsed by Mojang Studios or Microsoft.

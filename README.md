@@ -114,14 +114,6 @@ Requirements: Java `21`.
 
 The build checks Java compilation, dependency-free logic, English/Chinese localization parity, client-only metadata, resources, and the remapped JAR.
 
-## Project documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Health bar feature design](docs/features/health-bars/FEATURE_DESIGN.md)
-- [Test plan and current verification](docs/testing/TEST_PLAN.md)
-- [Release process](RELEASING.md)
-- [Changelog](CHANGELOG.md)
-
 ## Credits and license
 
 Vitals is released under the [MIT License](LICENSE). Minecraft is a trademark of Mojang Studios; this project is not affiliated with or endorsed by Mojang Studios or Microsoft.

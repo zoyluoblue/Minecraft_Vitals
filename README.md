@@ -4,7 +4,7 @@
 
 > **Vitals is a client-side Fabric mod for Minecraft 1.21.3 that adds smooth, configurable RPG-style health bars above living entities.** Install it only on the clients that want the HUD; a server-side installation is not required.
 
-[简体中文](README.zh-CN.md) · [Download v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) · [Modrinth (under review)](https://modrinth.com/mod/zoyluo-vitals) · [Report an issue](https://github.com/zoyluoblue/Minecraft_Vitals/issues)
+[简体中文](README.zh-CN.md) · [Download v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) · [Modrinth](https://modrinth.com/mod/zoyluo-vitals) · [Report an issue](https://github.com/zoyluoblue/Minecraft_Vitals/issues)
 
 ## Why Vitals?
 
@@ -38,7 +38,7 @@ Vitals does not need to be installed on the server. Each player who wants to see
 
 ### Modrinth
 
-Vitals has been submitted to [Modrinth](https://modrinth.com/mod/zoyluo-vitals) for review. Once approved, the verified Fabric `1.21.3` download will be available there; until then, use the GitHub release linked above.
+Download the verified Fabric `1.21.3` build from [Modrinth](https://modrinth.com/mod/zoyluo-vitals) or the GitHub release linked above.
 
 ## Use it in game
 

@@ -4,7 +4,7 @@
 
 > **Vitals 是 Minecraft 1.21.3 的纯客户端 Fabric Mod，为活体实体添加平滑、可配置的 RPG 风格头顶血条。** 只需在想看到 HUD 的客户端安装，服务器无需安装。
 
-[English](README.md) · [下载 v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) · [反馈问题](https://github.com/zoyluoblue/Minecraft_Vitals/issues)
+[English](README.md) · [下载 v1.0.1](https://github.com/zoyluoblue/Minecraft_Vitals/releases/tag/v1.0.1) · [Modrinth（审核中）](https://modrinth.com/mod/zoyluo-vitals) · [反馈问题](https://github.com/zoyluoblue/Minecraft_Vitals/issues)
 
 ## 为什么选择 Vitals？
 
@@ -35,6 +35,10 @@
 4. 使用 Fabric 配置启动 Minecraft，进入单人世界或多人服务器。
 
 Vitals 不需要安装到服务器。每位想看到血条的玩家都在自己的客户端安装；本地显示设置不会共享给其他玩家。
+
+### Modrinth
+
+Vitals 已提交至 [Modrinth](https://modrinth.com/mod/zoyluo-vitals) 审核。审核通过后，经过验证的 Fabric `1.21.3` 下载会在该页面提供；在此之前请使用上方的 GitHub Release。
 
 ## 游戏内使用
 

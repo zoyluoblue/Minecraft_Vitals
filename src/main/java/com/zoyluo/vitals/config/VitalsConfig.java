@@ -27,7 +27,8 @@ public final class VitalsConfig {
 	public boolean showNeutral = true;
 	public boolean showHostile = true;
 	public boolean showPassive = true;
-	public boolean showArmorStands = true;
+	// Retained for schema-1 JSON compatibility; armor stands are no longer rendered.
+	public boolean showArmorStands = false;
 	public boolean showOtherLiving = true;
 
 	public static VitalsConfig defaults() {

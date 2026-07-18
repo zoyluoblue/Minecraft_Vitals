@@ -12,6 +12,7 @@ public final class VitalsLogicChecks {
 	public static void main(String[] args) {
 		checkConfigSanitization();
 		checkFormattingAndColors();
+		checkArmorRatios();
 		checkShortcutEdges();
 		checkAnimation();
 		System.out.println("Vitals logic checks passed.");
@@ -26,6 +27,7 @@ public final class VitalsLogicChecks {
 
 		VitalsConfig sanitized = input.sanitizedCopy();
 		require(sanitized.schemaVersion == VitalsConfig.CURRENT_SCHEMA_VERSION, "schema version must normalize");
+		require(!sanitized.showArmorStands, "armor stands must be disabled by default");
 		require(sanitized.maxDistance == VitalsConfig.MAX_DISTANCE, "distance must clamp high");
 		require(sanitized.scale == 1.0D, "non-finite scale must use default");
 		require(sanitized.decimalPlaces == VitalsConfig.MIN_DECIMAL_PLACES, "precision must clamp low");
@@ -45,8 +47,8 @@ public final class VitalsLogicChecks {
 
 	private static void checkShortcutEdges() {
 		ConfigShortcutState state = new ConfigShortcutState();
-		require(!state.update(false, true, false, true, true), "V alone must not open");
-		require(state.update(true, true, false, true, true), "left Alt plus V must open on rising edge");
+		require(!state.update(false, true, false, true, true), "N alone must not open");
+		require(state.update(true, true, false, true, true), "left Alt plus N must open on rising edge");
 		require(!state.update(true, true, false, true, true), "holding the chord must not repeat");
 		require(!state.update(false, false, false, true, true), "release must not open");
 		require(!state.update(true, true, true, true, true), "an existing screen must block opening");
@@ -54,6 +56,13 @@ public final class VitalsLogicChecks {
 		state.update(false, false, false, true, true);
 		require(!state.update(true, true, false, true, false), "an unfocused window must not open");
 		require(state.update(true, true, false, true, true), "refocused chord may open after unfocused reset");
+	}
+
+	private static void checkArmorRatios() {
+		require(HealthBarMath.armorRatio(0) == 0.0D, "zero armor ratio");
+		require(HealthBarMath.armorRatio(10) == 0.5D, "half armor ratio");
+		require(HealthBarMath.armorRatio(20) == 1.0D, "full armor ratio");
+		require(HealthBarMath.armorRatio(40) == 1.0D, "modded armor ratio must clamp");
 	}
 
 	private static void checkAnimation() {

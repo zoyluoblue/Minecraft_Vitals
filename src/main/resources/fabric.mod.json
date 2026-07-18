@@ -3,7 +3,7 @@
 	"id": "vitals",
 	"version": "${version}",
 	"name": "Vitals",
-	"description": "Configurable RPG-style health bars above living entities, built as a client-only Fabric mod.",
+	"description": "Configurable RPG-style health and armor bars above creatures and players, built as a client-only Fabric mod.",
 	"authors": [
 		"zoyluo"
 	],

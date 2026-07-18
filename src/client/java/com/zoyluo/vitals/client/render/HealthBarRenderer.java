@@ -37,8 +37,10 @@ public final class HealthBarRenderer {
 	private static final int FRAME_COLOR = 0xE6C9A96E;
 	private static final int BACKGROUND_COLOR = 0xE616181D;
 	private static final int DAMAGE_TRAIL_COLOR = 0xFFF1D18A;
+	private static final int ARMOR_FILL_COLOR = 0xFFFFD45B;
 	private static final int TEXT_COLOR = 0xFFFFFFFF;
-	private static final int ARMOR_TEXT_COLOR = 0xFFFFD45B;
+	private static final float HEALTH_BAR_TOP = 0.0F;
+	private static final float ARMOR_BAR_TOP = -12.0F;
 
 	private static final HealthBarAnimationCache ANIMATIONS = new HealthBarAnimationCache();
 	private static long frame;
@@ -140,6 +142,7 @@ public final class HealthBarRenderer {
 
 		Text healthText = createHealthText(entity, config);
 		Text armorText = createArmorText(entity, config);
+		boolean armorBarVisible = armorText != null;
 		OrderedText nameText = createNameText(entity, config, textRenderer, vanillaNameplateVisible);
 		int healthWidth = healthText == null ? 0 : textRenderer.getWidth(healthText);
 		int armorWidth = armorText == null ? 0 : textRenderer.getWidth(armorText);
@@ -154,15 +157,30 @@ public final class HealthBarRenderer {
 				matrices.peek().getPositionMatrix(),
 				consumers,
 				barWidth,
+				HEALTH_BAR_TOP,
 				animation.displayedRatio(),
 				animation.trailRatio(),
-				healthRatio
+				HealthBarMath.colorFor(healthRatio),
+				DAMAGE_TRAIL_COLOR
 		);
+		if (armorBarVisible) {
+			double armorRatio = HealthBarMath.armorRatio(entity.getArmor());
+			drawBar(
+					matrices.peek().getPositionMatrix(),
+					consumers,
+					barWidth,
+					ARMOR_BAR_TOP,
+					armorRatio,
+					armorRatio,
+					ARMOR_FILL_COLOR,
+					ARMOR_FILL_COLOR
+			);
+		}
 		if (nameText != null) {
 			textRenderer.draw(
 					nameText,
 					-nameWidth / 2.0F,
-					armorText == null ? -11.0F : -21.0F,
+					armorBarVisible ? ARMOR_BAR_TOP - 10.0F : -11.0F,
 					TEXT_COLOR,
 					true,
 					matrices.peek().getPositionMatrix(),
@@ -176,8 +194,8 @@ public final class HealthBarRenderer {
 			textRenderer.draw(
 					armorText,
 					-armorWidth / 2.0F,
-					-11.0F,
-					ARMOR_TEXT_COLOR,
+					ARMOR_BAR_TOP + 1.0F,
+					TEXT_COLOR,
 					true,
 					matrices.peek().getPositionMatrix(),
 					consumers,
@@ -241,15 +259,16 @@ public final class HealthBarRenderer {
 			Matrix4f matrix,
 			VertexConsumerProvider consumers,
 			int width,
+			float top,
 			double displayedRatio,
 			double trailRatio,
-			double actualRatio
+			int fillColor,
+			int trailColor
 	) {
 		VertexConsumer vertices = consumers.getBuffer(RenderLayer.getTextBackground());
 		float left = -width / 2.0F;
 		float right = width / 2.0F;
-		float top = 0.0F;
-		float bottom = 11.0F;
+		float bottom = top + 11.0F;
 		float frameLeft = left + 1.0F;
 		float frameRight = right - 1.0F;
 		float frameTop = top + 1.0F;
@@ -276,10 +295,10 @@ public final class HealthBarRenderer {
 
 		if (trailRight > innerLeft) {
 			if (fillRight > innerLeft) {
-				drawRect(vertices, matrix, innerLeft, innerTop, fillRight, innerBottom, HealthBarMath.colorFor(actualRatio));
+				drawRect(vertices, matrix, innerLeft, innerTop, fillRight, innerBottom, fillColor);
 			}
 			if (trailRight > fillRight) {
-				drawRect(vertices, matrix, fillRight, innerTop, trailRight, innerBottom, DAMAGE_TRAIL_COLOR);
+				drawRect(vertices, matrix, fillRight, innerTop, trailRight, innerBottom, trailColor);
 			}
 		}
 		if (trailRight < innerRight) {

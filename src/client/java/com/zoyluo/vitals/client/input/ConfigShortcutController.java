@@ -26,10 +26,10 @@ public final class ConfigShortcutController {
 		boolean focused = client.isWindowFocused();
 		long handle = client.getWindow().getHandle();
 		boolean leftAltDown = focused && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_ALT);
-		boolean vDown = focused && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_V);
+		boolean shortcutKeyDown = focused && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_N);
 		boolean gameReady = client.player != null && client.world != null;
 
-		if (STATE.update(leftAltDown, vDown, client.currentScreen != null, gameReady, focused)) {
+		if (STATE.update(leftAltDown, shortcutKeyDown, client.currentScreen != null, gameReady, focused)) {
 			client.setScreen(new VitalsConfigScreen(null));
 		}
 	}

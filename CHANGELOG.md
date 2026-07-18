@@ -4,6 +4,18 @@ All notable changes to Vitals are documented here.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-07-18
+
+### Changed
+
+- Changed the configuration shortcut to Left Alt/Option + N.
+- Replaced the armor text line with an optional yellow armor progress bar above the health bar; zero armor remains hidden.
+- Simplified the entity settings by removing the obsolete armor-stand toggle while retaining its config field for schema-1 compatibility.
+
+### Fixed
+
+- Limited overhead bars to creatures and players; armor stands and non-living display entities are excluded.
+
 ## [1.0.0] - 2026-07-15
 
 ### Added

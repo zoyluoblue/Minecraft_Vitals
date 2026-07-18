@@ -5,12 +5,12 @@ public final class ConfigShortcutState {
 
 	public boolean update(
 			boolean leftAltDown,
-			boolean vDown,
+			boolean shortcutKeyDown,
 			boolean screenOpen,
 			boolean gameReady,
 			boolean windowFocused
 	) {
-		boolean chordDown = windowFocused && leftAltDown && vDown;
+		boolean chordDown = windowFocused && leftAltDown && shortcutKeyDown;
 		boolean shouldOpen = chordDown && !chordWasDown && !screenOpen && gameReady;
 		chordWasDown = chordDown;
 		return shouldOpen;

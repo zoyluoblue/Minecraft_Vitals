@@ -30,6 +30,8 @@ public final class VitalsConfigScreen extends Screen {
 	private static final int ERROR_TEXT = 0xFFF07B7B;
 	private static final int PREVIEW_BACKGROUND = 0xFF16181D;
 	private static final int PREVIEW_TRAIL = 0xFFF1D18A;
+	private static final int PREVIEW_ARMOR = 0xFFFFD45B;
+	private static final int PREVIEW_DISABLED = 0xFF66616B;
 
 	private final Screen parent;
 	private final List<ClickableWidget> dependentWidgets = new ArrayList<>();
@@ -148,8 +150,7 @@ public final class VitalsConfigScreen extends Screen {
 		addBoolean(contentLeft + columnWidth + gap, top + 24, columnWidth, "option.vitals.neutral", working.showNeutral, true, value -> working.showNeutral = value);
 		addBoolean(contentLeft, top + 48, columnWidth, "option.vitals.hostile", working.showHostile, true, value -> working.showHostile = value);
 		addBoolean(contentLeft + columnWidth + gap, top + 48, columnWidth, "option.vitals.passive", working.showPassive, true, value -> working.showPassive = value);
-		addBoolean(contentLeft, top + 72, columnWidth, "option.vitals.armor_stands", working.showArmorStands, true, value -> working.showArmorStands = value);
-		addBoolean(contentLeft + columnWidth + gap, top + 72, columnWidth, "option.vitals.other_living", working.showOtherLiving, true, value -> working.showOtherLiving = value);
+		addBoolean(contentLeft, top + 72, columnWidth, "option.vitals.other_living", working.showOtherLiving, true, value -> working.showOtherLiving = value);
 	}
 
 	private void addBoolean(
@@ -368,23 +369,30 @@ public final class VitalsConfigScreen extends Screen {
 		int previewWidth = Math.min(contentWidth - 24, Math.max(96, (int) Math.round(150.0D * working.scale)));
 		int left = previewCenter - previewWidth / 2;
 		int right = previewCenter + previewWidth / 2;
-		Text previewArmor = previewArmorText();
 		int labelY = previewTop;
 		if (working.showName) {
 			context.drawCenteredTextWithShadow(textRenderer, Text.translatable("screen.vitals.preview_name"), previewCenter, labelY, 0xFFFFFFFF);
 			labelY += 10;
 		}
-		if (previewArmor != null) {
-			context.drawCenteredTextWithShadow(textRenderer, previewArmor, previewCenter, labelY, 0xFFFFD45B);
-			labelY += 10;
-		}
 		int barTop = labelY + 2;
+		Text previewArmor = previewArmorText();
+		if (previewArmor != null) {
+			context.fill(left, barTop, right, barTop + 13, GOLD);
+			context.fill(left + 1, barTop + 1, right - 1, barTop + 12, PREVIEW_BACKGROUND);
+			int armorInnerWidth = previewWidth - 4;
+			int armorFillWidth = (int) Math.round(armorInnerWidth * HealthBarMath.armorRatio(8));
+			int armorColor = working.enabled ? PREVIEW_ARMOR : PREVIEW_DISABLED;
+			context.fill(left + 2, barTop + 2, left + 2 + armorFillWidth, barTop + 11, armorColor);
+			context.drawCenteredTextWithShadow(textRenderer, previewArmor, previewCenter, barTop + 2, 0xFFFFFFFF);
+			barTop += 15;
+		}
 
 		context.fill(left, barTop, right, barTop + 13, GOLD);
 		context.fill(left + 1, barTop + 1, right - 1, barTop + 12, PREVIEW_BACKGROUND);
 		int innerWidth = previewWidth - 4;
-		context.fill(left + 2, barTop + 2, left + 2 + (int) (innerWidth * 0.72D), barTop + 11, PREVIEW_TRAIL);
-		int healthColor = working.enabled ? HealthBarMath.colorFor(0.63D) : 0xFF66616B;
+		int trailColor = working.enabled ? PREVIEW_TRAIL : PREVIEW_DISABLED;
+		context.fill(left + 2, barTop + 2, left + 2 + (int) (innerWidth * 0.72D), barTop + 11, trailColor);
+		int healthColor = working.enabled ? HealthBarMath.colorFor(0.63D) : PREVIEW_DISABLED;
 		context.fill(left + 2, barTop + 2, left + 2 + (int) (innerWidth * 0.63D), barTop + 11, healthColor);
 
 		Text previewValue = previewHealthText();

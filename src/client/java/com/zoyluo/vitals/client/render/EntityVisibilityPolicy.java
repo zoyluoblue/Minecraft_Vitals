@@ -19,6 +19,7 @@ public final class EntityVisibilityPolicy {
 
 	public static boolean shouldRender(LivingEntity entity, PlayerEntity viewer, VitalsConfig config) {
 		if (entity == viewer
+				|| entity instanceof ArmorStandEntity
 				|| entity.isRemoved()
 				|| !entity.isAlive()
 				|| entity.isSpectator()
@@ -30,7 +31,7 @@ public final class EntityVisibilityPolicy {
 		}
 
 		return switch (classify(entity)) {
-			case ARMOR_STAND -> config.showArmorStands;
+			case ARMOR_STAND -> false;
 			case PLAYER -> config.showPlayers;
 			case BOSS -> config.showBosses;
 			case TAMED -> config.showTamed;

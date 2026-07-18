@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public final class HealthBarMath {
+	public static final double FULL_ARMOR_POINTS = 20.0D;
 	public static final int HEALTHY_COLOR = 0xFF45B85A;
 	public static final int WARNING_COLOR = 0xFFD9A441;
 	public static final int CRITICAL_COLOR = 0xFFD65050;
@@ -16,6 +17,10 @@ public final class HealthBarMath {
 			return 0.0D;
 		}
 		return clamp01(health / maximumHealth);
+	}
+
+	public static double armorRatio(double armor) {
+		return ratio(armor, FULL_ARMOR_POINTS);
 	}
 
 	public static double approach(double current, double target, double deltaSeconds, double settleSeconds) {

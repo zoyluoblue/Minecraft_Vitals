@@ -49,7 +49,14 @@ Download the verified Fabric `1.21.3` build from [Modrinth](https://modrinth.com
 | Windows / Linux | **Left Alt + N** |
 | macOS | **Left Option + N** |
 
-Only the **left** Alt/Option key triggers the shortcut. The native configuration screen has **Display** and **Entities** pages, a live preview, **Defaults**, **Cancel**, **Apply**, and **Done** actions. Pressing Escape with unapplied edits asks before discarding them.
+How to use the shortcut:
+
+1. Enter a single-player world or multiplayer server and close any open menu or chat screen.
+2. Hold the **left** Alt/Option key, then tap **N** once. The right Alt/Option key does not trigger Vitals.
+3. On **Display**, use **Health Bar** to enable or disable all overhead bars and **Armor Bar** to show or hide the yellow armor bar. Use **Entities** to choose which creature categories are tracked.
+4. Select **Apply** to save without closing the screen, or **Done** to save and close it. **Cancel** discards the draft; Escape asks before discarding unapplied changes.
+
+If macOS or another application has registered Left Option + N as a global shortcut, disable or remap that conflicting shortcut so Minecraft can receive the key combination.
 
 ### What the bar shows
 
